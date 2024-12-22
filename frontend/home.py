@@ -293,6 +293,10 @@ def amazon_page():
     st.markdown("<h2 style='color: #00FFFF;'>Amazon Product Feedback Analyzer",unsafe_allow_html=True)
     st.write("This page will allow you to analyze reviews for Amazon products.")
     # You can place your existing Amazon product analysis code here
+    from selenium import webdriver
+    from selenium.webdriver.chrome.service import Service
+    from webdriver_manager.chrome import ChromeDriverManager
+    from selenium.webdriver.chrome.options import Options
     import nltk
     from nltk.sentiment import SentimentIntensityAnalyzer
     import pandas as pd
@@ -308,7 +312,6 @@ def amazon_page():
     import streamlit as st
     import plotly.express as px
 
-    # Ensure necessary NLTK data is downloaded
     nltk.download('vader_lexicon')
     nltk.download('stopwords')
 
@@ -319,7 +322,7 @@ def amazon_page():
     client = MongoClient("mongodb://localhost:27017/")
     db = client["feedback_fusion"]
 
-    # Selenium setup for Amazon scraping
+    # Set up headless mode for Streamlit Cloud
     def get_amazon_reviews_selenium(product_url):
         # Set up Selenium WebDriver
         chrome_options = Options()
@@ -328,7 +331,7 @@ def amazon_page():
         chrome_options.add_argument("--no-sandbox")
         
         # Path to chromedriver (make sure it's correct)
-        service = Service("C:\\Users\\ASUS\\Downloads\\chromedriver-win64\\chromedriver-win64\\chromedriver.exe")  # Update with your path
+        service = Service(ChromeDriverManager().install())  # Update with your path
         
         # Initialize WebDriver
         driver = webdriver.Chrome(service=service, options=chrome_options)
@@ -346,12 +349,22 @@ def amazon_page():
             
             # Extract reviews
             reviews = []
-            try:
+            while True:
                 review_elements = driver.find_elements(By.XPATH, "//span[@data-hook='review-body']")
-                reviews = [review.text.strip() for review in review_elements]
-            except Exception:
-                print("Debug: Review elements not found")
-            
+                reviews.extend([review.text.strip() for review in review_elements])
+
+                # Scroll down to load more reviews
+                driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                time.sleep(2)
+
+                # Check if there's a "Next" button to load more reviews
+                next_button = driver.find_elements(By.XPATH, "//li[@class='a-last']/a")
+                if next_button:
+                    next_button[0].click()
+                    time.sleep(3)
+                else:
+                    break
+
             return product_name, reviews
         
         finally:
@@ -414,8 +427,8 @@ def amazon_page():
             return "Error in generating summary. Please check your input or GPU configuration."
 
     # Streamlit UI
-    
-    st.write("Enter the Amazon product URL below to analyze reviews:")
+    st.title("Amazon Product Review Analyzer")
+    st.subheader("Enter the Amazon product URL below to analyze reviews:")
 
     product_url = st.text_input("Product URL")
 
@@ -436,24 +449,24 @@ def amazon_page():
             
             st.metric("Total Comments", len(reviews))
             # Sentiment Distribution Visualization (Bar chart)
-            st.markdown("<h2 style='color: #00FFFF;'>Sentiment Distribution",unsafe_allow_html=True)
+            st.subheader("Sentiment Distribution")
             sentiment_df = pd.DataFrame(list(sentiment_counts.items()), columns=['Sentiment', 'Count'])
             fig = px.bar(sentiment_df, x='Sentiment', y='Count', title="Sentiment Distribution of Reviews", color='Sentiment')
             st.plotly_chart(fig)
             
             # Generate a word cloud
-            st.markdown("<h2 style='color: #00FFFF;'>Word Cloud for Reviews",unsafe_allow_html=True)
+            st.subheader("Word Cloud for Reviews")
             wordcloud = generate_word_cloud(reviews)
             st.image(wordcloud.to_array(), use_container_width=True)
 
             # Show first 10 reviews in an organized table
-            st.markdown("<h2 style='color: #00FFFF;'>First 10 Reviews",unsafe_allow_html=True)
+            st.subheader("First 10 Reviews")
             reviews_df = pd.DataFrame(processed_reviews[:10])  # Display first 10 reviews
             st.write(reviews_df[['review', 'sentiment']])
             
 
             # Summarize the reviews
-            st.markdown("<h2 style='color: #00FFFF;'>Summary of Reviews",unsafe_allow_html=True)
+            st.subheader("Summary of Reviews")
             summary = summarize_reviews(reviews)
             st.write(summary)
 
@@ -461,6 +474,7 @@ def amazon_page():
 
         else:
             st.write("No reviews found for this product.")
+
             
             
     if st.button("Return to Main Page"):
