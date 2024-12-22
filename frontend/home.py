@@ -114,7 +114,7 @@ def youtube_page():
     db = client["feedback_fusion"]
 
     # Define the YouTube API key here (predefined)
-    api_key = "AIzaSyBEh81XmP2q0By0E6M8013Dg3a64ycsQ9s"  # Replace with your actual API key
+    api_key = "yt API key "  # Replace with your actual API key
 
     # Function to extract comments using YouTube Data API
     def extract_comments(video_id, api_key):
