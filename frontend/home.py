@@ -84,9 +84,9 @@ def main_page():
 # YouTube Video Page
 def youtube_page():
     import streamlit as st
-    st.markdown("<h2 style='color: #00FFFF;'>YouTube Video Feedback Analyzer",unsafe_allow_html=True)
+    st.markdown("<h2 style='color: #00FFFF;'>YouTube Video Feedback Analyzer", unsafe_allow_html=True)
     st.write("This page will allow you to analyze feedback for YouTube videos.")
-    # You can place your existing YouTube analysis code here
+    
     import nltk
     from nltk.sentiment import SentimentIntensityAnalyzer
     import pandas as pd
@@ -96,7 +96,6 @@ def youtube_page():
     from urllib.parse import urlparse, parse_qs
     import plotly.express as px
     import plotly.graph_objects as go
-    import streamlit as st
     from wordcloud import WordCloud
     from nltk.corpus import stopwords
     from sklearn.feature_extraction.text import TfidfVectorizer
@@ -114,9 +113,10 @@ def youtube_page():
     client = MongoClient("mongodb://localhost:27017/")
     db = client["feedback_fusion"]
 
+    # Define the YouTube API key here (predefined)
+    api_key = "AIzaSyBEh81XmP2q0By0E6M8013Dg3a64ycsQ9s"  # Replace with your actual API key
 
     # Function to extract comments using YouTube Data API
-
     def extract_comments(video_id, api_key):
         youtube = googleapiclient.discovery.build("youtube", "v3", developerKey=api_key)
         comments = []
@@ -209,8 +209,6 @@ def youtube_page():
 
 
     # Streamlit App Layout
-    
-
     # Input for YouTube video URL
     video_url = st.text_input("Enter YouTube Video URL:")
 
@@ -218,75 +216,62 @@ def youtube_page():
         video_id = extract_video_id(video_url)
         
         if video_id:
-            api_key = st.text_input("Enter YouTube API Key:")
-            
-            if api_key:
-                comments = extract_comments(video_id, api_key)
+            comments = extract_comments(video_id, api_key)
                 
-                if comments:
-                    processed_comments = process_comments(comments)
-                    store_results(processed_comments, video_id)  # Store results in MongoDB
-                    total_comments = len(comments)
-                    st.metric("Total Comments", total_comments)
-                    # Create sentiment distribution (Bar chart)
-                    st.markdown("<h2 style='color: #00FFFF;'>Sentiment Distribution Graph",unsafe_allow_html=True)
-                    sentiment_counts = pd.DataFrame(processed_comments)["sentiment"].value_counts()
-                    sentiment_fig = px.bar(
-                        sentiment_counts, 
-                        x=sentiment_counts.index, 
-                        y=sentiment_counts.values, 
-                         
-                        labels={"x": "Sentiment", "y": "Number of Comments"},
-                        color=sentiment_counts.index
-                    )
-                    st.plotly_chart(sentiment_fig)
-                    st.markdown("<h2 style='color: #00FFFF;'>Sentiment Score Distribution",unsafe_allow_html=True)
-                    # Sentiment score distribution (Histogram)
-                    sentiment_scores = pd.DataFrame(processed_comments)["scores"].apply(lambda x: x['compound'])
-                    sentiment_hist_fig = px.histogram(
-                        sentiment_scores, 
-                        nbins=30, 
-                        
-                        labels={"value": "Sentiment Score"}
-                    )
-                    st.plotly_chart(sentiment_hist_fig)
-                    st.markdown("<h2 style='color: #00FFFF;'>Word Cloud for Reviews",unsafe_allow_html=True)
-                    # Word Cloud (Word frequency)
-                    wordcloud = generate_word_cloud(comments)
-                    # wordcloud_fig = go.Figure(
-                    #     go.Image(z=wordcloud.to_array())
-                    # )
-                    # wordcloud_fig.update_layout(title="Word Cloud of Comments")
-                    # st.plotly_chart(wordcloud_fig, use_container_width=True)
-                    st.image(wordcloud.to_array(), use_container_width=True)
+            if comments:
+                processed_comments = process_comments(comments)
+                store_results(processed_comments, video_id)  # Store results in MongoDB
+                total_comments = len(comments)
+                st.metric("Total Comments", total_comments)
+                # Create sentiment distribution (Bar chart)
+                st.markdown("<h2 style='color: #00FFFF;'>Sentiment Distribution Graph",unsafe_allow_html=True)
+                sentiment_counts = pd.DataFrame(processed_comments)["sentiment"].value_counts()
+                sentiment_fig = px.bar(
+                    sentiment_counts, 
+                    x=sentiment_counts.index, 
+                    y=sentiment_counts.values, 
+                    labels={"x": "Sentiment", "y": "Number of Comments"},
+                    color=sentiment_counts.index
+                )
+                st.plotly_chart(sentiment_fig)
+                st.markdown("<h2 style='color: #00FFFF;'>Sentiment Score Distribution",unsafe_allow_html=True)
+                # Sentiment score distribution (Histogram)
+                sentiment_scores = pd.DataFrame(processed_comments)["scores"].apply(lambda x: x['compound'])
+                sentiment_hist_fig = px.histogram(
+                    sentiment_scores, 
+                    nbins=30, 
+                    labels={"value": "Sentiment Score"}
+                )
+                st.plotly_chart(sentiment_hist_fig)
+                st.markdown("<h2 style='color: #00FFFF;'>Word Cloud for Reviews",unsafe_allow_html=True)
+                # Word Cloud (Word frequency)
+                wordcloud = generate_word_cloud(comments)
+                st.image(wordcloud.to_array(), use_container_width=True)
 
-                    # Display processed comments (first 10)
-                    st.markdown("<h2 style='color: #00FFFF;'>Processed Comments (First 10)",unsafe_allow_html=True)
-                    st.write(pd.DataFrame(processed_comments)[['comment', 'sentiment']].head(10))
+                # Display processed comments (first 10)
+                st.markdown("<h2 style='color: #00FFFF;'>Processed Comments (First 10)",unsafe_allow_html=True)
+                st.write(pd.DataFrame(processed_comments)[['comment', 'sentiment']].head(10))
                     
-                    summary = summarize_comments(comments)
-                    
-                    st.markdown("<h2 style='color: #00FFFF;'>Comments Summary",unsafe_allow_html=True)
-                    with st.spinner("Generating summary..."):
-                        try:
-                            summary = summarize_comments(comments)
-                            st.success("Summary Generated!")
-                            st.write(summary)
-                        except Exception as e:
-                            st.error(f"Error in summarization: {e}")
-                    
-                else:
-                    st.warning("No comments found.")
+                summary = summarize_comments(comments)
+                
+                st.markdown("<h2 style='color: #00FFFF;'>Comments Summary",unsafe_allow_html=True)
+                with st.spinner("Generating summary..."):
+                    try:
+                        summary = summarize_comments(comments)
+                        st.success("Summary Generated!")
+                        st.write(summary)
+                    except Exception as e:
+                        st.error(f"Error in summarization: {e}")
+                
             else:
-                st.warning("Please enter a valid YouTube API Key.")
+                st.warning("No comments found.")
         else:
             st.warning("Invalid YouTube video URL.")
-            
             
     if st.button("Return to Main Page"):
         st.session_state["page"] = "main"
         st.rerun()
-        
+
 # Amazon Product Page
 def amazon_page():
     import streamlit as st
