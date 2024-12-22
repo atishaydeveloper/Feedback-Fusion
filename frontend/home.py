@@ -335,7 +335,7 @@ def amazon_page():
         
         # Initialize WebDriver
         driver = webdriver.Chrome(service=service, options=chrome_options)
-        
+        driver.get('https://www.amazon.com')
         try:
             # Open the product URL
             driver.get(product_url)
