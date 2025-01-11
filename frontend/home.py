@@ -4,6 +4,8 @@ import streamlit as st
 def main_page():
      # Title of the page
     # Title of the page with custom color
+    
+
     st.markdown("<h1 style='color: #00FFFF;'>Feedback-Fusion: Empowering Better Decisions with Feedback Analysis</h1>", unsafe_allow_html=True)
     
     # Vision of the Project with custom color
@@ -37,6 +39,7 @@ def main_page():
 
     st.markdown("<h2 style='color: #00FFFF;'>Explore Our Services", unsafe_allow_html=True)
     st.write("Choose a service to begin analyzing feedback:")
+    
     
     # Button for YouTube Video
     if st.button("YouTube Video"):
@@ -114,7 +117,11 @@ def youtube_page():
     db = client["feedback_fusion"]
 
     # Define the YouTube API key here (predefined)
+<<<<<<< HEAD
+    api_key = "AIzaSyC_bHB2AEhn2nnmctEYpi_wKb8rofQyChU"  # Replace with your actual API key
+=======
     api_key = "yt API key "  # Replace with your actual API key
+>>>>>>> efabd0a48d1a570598f24ac637da9ac6bdea65f8
 
     # Function to extract comments using YouTube Data API
     def extract_comments(video_id, api_key):
