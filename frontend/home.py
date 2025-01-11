@@ -120,7 +120,7 @@ def youtube_page():
 
     api_key = "AIzaSyC_bHB2AEhn2nnmctEYpi_wKb8rofQyChU"  # Replace with your actual API key
 
-    api_key = "yt API key "  # Replace with your actual API key
+    
 
 
     # Function to extract comments using YouTube Data API
