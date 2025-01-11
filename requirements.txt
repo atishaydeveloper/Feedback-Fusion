@@ -10,7 +10,6 @@ scikit-learn
 selenium
 webdriver_manager
 streamlit
-transformers>=4.0.0
-torch>=1.9.0
-tensorflow>=2.0.0
-
+transformers
+torch
+tensorflow
