@@ -11,3 +11,7 @@ google-api-python-client
 tensorflow
 keras
 torch
+scikit-learn
+plotly
+google-generativeai
+regex
