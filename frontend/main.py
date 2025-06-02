@@ -163,7 +163,7 @@ def main_page():
     
 def youtube_page():
     # Define the YouTube API key here (predefined)
-    api_key = "AIzaSyC_bHB2AEhn2nnmctEYpi_wKb8rofQyChU"  # Replace with your actual API key
+    api_key = "key"  # Replace with your actual API key
 
     # Function to extract comments using YouTube Data API
     def extract_comments(video_id, api_key):
@@ -277,7 +277,7 @@ def youtube_page():
             combined_text = combined_text[:3000]
 
         # Configure Gemini API with your API key
-        genai.configure(api_key="AIzaSyCYAkTZfIJ2eUWBAHczQ4qaK5HbFCvzjUc")
+        genai.configure(api_key="key")
 
         try:
             # Use Gemini to generate a summary
@@ -574,7 +574,7 @@ def amazon_page():
         if len(combined_text) > 3000:
             combined_text = combined_text[:3000]
 
-        genai.configure(api_key="AIzaSyCoB8kXfj4IPVxqYy57EW5RDOLWsI0BpXQ") #configgemini AI
+        genai.configure(api_key="key") #configgemini AI
         model = genai.GenerativeModel("gemini-2.0-flash")
 
         try:
@@ -600,16 +600,7 @@ def amazon_page():
             pros_cons_response = model.generate_content(pros_cons_prompt)
             pros_cons_table = pros_cons_response.text if pros_cons_response.text else "Pros/Cons extraction failed."
 
-            # Split into Pros and Cons
-            # pros = []
-            # cons = []
-            # parts = pros_cons_text.split("Cons:")
-            # if len(parts) == 2:
-            #     pros_str = parts[0].replace("Pros:", "").strip()
-            #     cons_str = parts[1].strip()
-
-            #     pros = [p.strip() for p in pros_str.split("-") if p.strip()]
-            #     cons = [c.strip() for c in cons_str.split("-") if c.strip()]
+          
 
             return {"summary": summary, "table": pros_cons_table}
 
@@ -617,38 +608,6 @@ def amazon_page():
             return {"summary": f"Error: {e}", "table": "Error generating table."}
 
 
-    # Function to summarize reviews using Hugging Face summarization
-    # def summarize_reviews(reviews):
-    #     """
-    #     Summarizes a list of reviews using the Gemini API.
-
-    #     Args:
-    #         reviews (list): List of strings containing user reviews.
-
-    #     Returns:
-    #         str: Summarized text of the reviews.
-    #     """
-    #     # Combine all reviews into a single text
-    #     combined_text = " ".join(reviews)
-
-    #     # Truncate text if it exceeds API limits
-    #     if len(combined_text) > 3000:
-    #         combined_text = combined_text[:3000]
-
-    #     # Configure Gemini API with your API key
-    #     genai.configure(api_key="AIzaSyCYAkTZfIJ2eUWBAHczQ4qaK5HbFCvzjUc")
-
-    #     try:
-    #         # Use Gemini to generate a summary
-    #         model = genai.GenerativeModel("gemini-pro")
-    #         response = model.generate_content(f"Summarize all the following reviews in a concise, single paragraph which summarizes over all reviews into one statement:\n{combined_text}")
-
-    #         # Return the summary
-    #         return response.text if response.text else "Error: No response from the model."
-        
-    #     except Exception as e:
-    #         print(f"Error in summarization: {e}")
-    #         return "Error in generating summary. Please check your API key and input format."
         
         
     def generate_ideal_for_recommendation(sentiment_counts, tfidf_keywords, processed_reviews, reviews, product_name="This Product"):
@@ -686,7 +645,7 @@ def amazon_page():
         """
 
         # Configure Gemini API with your API key
-        genai.configure(api_key="AIzaSyCoB8kXfj4IPVxqYy57EW5RDOLWsI0BpXQ")
+        genai.configure(api_key="key")
 
         try:
             # Use Gemini to generate a recommendation
@@ -734,7 +693,7 @@ def amazon_page():
         Task: Based on this, should someone buy this product? Answer with 'Yes' or 'No' followed by a short explanation."""
 
         # Configure Gemini API with your API key
-        genai.configure(api_key="AIzaSyCoB8kXfj4IPVxqYy57EW5RDOLWsI0BpXQ")
+        genai.configure(api_key="key")
 
         try:
             # Use Gemini to generate a recommendation
@@ -761,7 +720,7 @@ def amazon_page():
         if len(combined_text) > 3000:
             combined_text = combined_text[:3000]
 
-        genai.configure(api_key="AIzaSyCoB8kXfj4IPVxqYy57EW5RDOLWsI0BpXQ")
+        genai.configure(api_key="key")
         model = genai.GenerativeModel("gemini-2.0-flash")
 
         prompt = f"""
@@ -798,7 +757,7 @@ def amazon_page():
         if len(combined_text) > 3000:
             combined_text = combined_text[:3000]
 
-        genai.configure(api_key="AIzaSyCoB8kXfj4IPVxqYy57EW5RDOLWsI0BpXQ")
+        genai.configure(api_key="key")
         model = genai.GenerativeModel("gemini-2.0-flash")
 
         prompt = f"""
@@ -1072,7 +1031,7 @@ def company_page():
             combined_text = combined_text[:3000]
 
         # Configure Gemini API with your API key
-        genai.configure(api_key="AIzaSyCYAkTZfIJ2eUWBAHczQ4qaK5HbFCvzjUc")  # Replace with your actual API key
+        genai.configure(api_key="key")  # Replace with your actual API key
 
         try:
             # Use Gemini to generate a summary
